@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:todo_task/shared/style/colors.dart';
 
 Widget customTextField({
   @required TextEditingController controller,
@@ -116,23 +117,47 @@ Widget customCard({
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              CircleAvatar(
-                backgroundColor: colorText,
-                radius: 8,
-              ),
-              SizedBox(
-                width: 8,
-              ),
-              Text(
-                stateTask,
-                style: TextStyle(
+          Container(
+            padding: EdgeInsets.symmetric(vertical: 8),
+            width: 80,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(18),
+              color: colorText,
+              boxShadow: [
+                BoxShadow(
                   color: colorText,
-                  fontSize: 18,
+                  blurRadius: 10,
+                  offset: Offset.zero,
                 ),
+              ],
+            ),
+            child: Text(
+              stateTask,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 16,
               ),
-            ],
+            ),
+            /*child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CircleAvatar(
+                  backgroundColor: colorText,
+                  radius: 8,
+                ),
+                SizedBox(
+                  width: 8,
+                ),
+                Text(
+                  stateTask,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
+                  ),
+                ),
+              ],
+            ),*/
           ),
           Divider(
             color: Colors.grey.shade400,
