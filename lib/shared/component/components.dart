@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:todo_task/shared/component/constants.dart';
 import 'package:todo_task/shared/style/colors.dart';
 
 Widget customTextField({
@@ -117,47 +118,48 @@ Widget customCard({
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            padding: EdgeInsets.symmetric(vertical: 8),
-            width: 80,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(18),
-              color: colorText,
-              boxShadow: [
-                BoxShadow(
+          Row(
+            children: [
+              Container(
+                padding: EdgeInsets.symmetric(vertical: 8),
+                width: 80,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(18),
                   color: colorText,
-                  blurRadius: 10,
-                  offset: Offset.zero,
+                  boxShadow: [
+                    BoxShadow(
+                      color: colorText,
+                      blurRadius: 10,
+                      offset: Offset.zero,
+                    ),
+                  ],
                 ),
-              ],
-            ),
-            child: Text(
-              stateTask,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 16,
-              ),
-            ),
-            /*child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                CircleAvatar(
-                  backgroundColor: colorText,
-                  radius: 8,
-                ),
-                SizedBox(
-                  width: 8,
-                ),
-                Text(
+                child: Text(
                   stateTask,
+                  textAlign: TextAlign.center,
                   style: TextStyle(
                     color: Colors.white,
-                    fontSize: 18,
+                    fontSize: 16,
                   ),
                 ),
-              ],
-            ),*/
+              ),
+              Spacer(),
+              IconButton(
+                onPressed: () {
+                  return PopupMenuButton(
+                    itemBuilder: (BuildContext context) {
+                      return popupMenuData.map((e) {
+                        PopupMenuItem(
+                          value: e,
+                          child: Text(e),
+                        );
+                      }).toList();
+                    },
+                  );
+                },
+                icon: Icon(Icons.more_vert),
+              )
+            ],
           ),
           Divider(
             color: Colors.grey.shade400,
