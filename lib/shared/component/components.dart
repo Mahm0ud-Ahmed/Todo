@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:todo_task/shared/component/constants.dart';
 import 'package:todo_task/shared/style/colors.dart';
@@ -106,14 +106,16 @@ Widget customCard({
   @required String date,
   @required String stateTask,
   @required Color colorText,
+  @required Function onSubmitPopUpMenu,
+  @required Function onClick,
 }) {
   return Card(
     elevation: 2,
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(16),
     ),
-    child: Padding(
-      padding: const EdgeInsets.all(16),
+    child: Container(
+      padding: EdgeInsets.all(16),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -145,90 +147,112 @@ Widget customCard({
               ),
               Spacer(),
               IconButton(
-                onPressed: () {
-                  return PopupMenuButton(
-                    itemBuilder: (BuildContext context) {
-                      return popupMenuData.map((e) {
-                        PopupMenuItem(
-                          value: e,
-                          child: Text(e),
-                        );
-                      }).toList();
-                    },
-                  );
-                },
-                icon: Icon(Icons.more_vert),
+                onPressed: () {},
+                icon: PopupMenuButton(
+                  onSelected: onSubmitPopUpMenu,
+                  itemBuilder: (BuildContext context) {
+                    return popupMenuData
+                        .map(
+                          (item) => PopupMenuItem<String>(
+                            child: Text(item),
+                            value: item,
+                          ),
+                        )
+                        .toList();
+                  },
+                ),
               )
             ],
           ),
           Divider(
             color: Colors.grey.shade400,
           ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                title,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  color: Colors.indigo.shade900,
-                  fontSize: 20,
+          GestureDetector(
+            onTap: onClick,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(
+                  title,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: Colors.indigo.shade900,
+                    fontSize: 20,
+                  ),
                 ),
-              ),
-              SizedBox(
-                height: 6,
-              ),
-              Text(
-                description,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  color: Colors.grey.shade400,
-                  fontSize: 16,
+                SizedBox(
+                  height: 6,
                 ),
-              ),
-              SizedBox(
-                height: 16,
-              ),
-              Row(
-                children: [
-                  Icon(
-                    Icons.access_time_outlined,
-                    color: Colors.grey,
+                Text(
+                  description,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: Colors.grey.shade400,
+                    fontSize: 16,
                   ),
-                  SizedBox(
-                    width: 4,
-                  ),
-                  Text(
-                    time,
-                    style: TextStyle(
-                      color: Colors.indigo.shade900,
-                      fontSize: 16,
+                ),
+                SizedBox(
+                  height: 16,
+                ),
+                Row(
+                  children: [
+                    Icon(
+                      Icons.access_time_outlined,
+                      color: Colors.grey,
                     ),
-                  ),
-                  Spacer(),
-                  Icon(
-                    Icons.date_range,
-                    color: Colors.grey,
-                  ),
-                  SizedBox(
-                    width: 4,
-                  ),
-                  Text(
-                    date,
-                    style: TextStyle(
-                      color: Colors.indigo.shade900,
-                      fontSize: 16,
+                    SizedBox(
+                      width: 4,
                     ),
-                  ),
-                  Spacer(),
-                ],
-              ),
-            ],
+                    Text(
+                      time,
+                      style: TextStyle(
+                        color: Colors.indigo.shade900,
+                        fontSize: 16,
+                      ),
+                    ),
+                    Spacer(),
+                    Icon(
+                      Icons.date_range,
+                      color: Colors.grey,
+                    ),
+                    SizedBox(
+                      width: 4,
+                    ),
+                    Text(
+                      date,
+                      style: TextStyle(
+                        color: Colors.indigo.shade900,
+                        fontSize: 16,
+                      ),
+                    ),
+                    Spacer(),
+                  ],
+                ),
+              ],
+            ),
           ),
         ],
       ),
     ),
   );
+}
+
+AwesomeDialog customDialog({
+  @required BuildContext context,
+  @required DialogType type,
+  @required String title,
+  @required String description,
+  @required Function okBtn,
+}) {
+  return AwesomeDialog(
+    context: context,
+    dialogType: type,
+    animType: AnimType.BOTTOMSLIDE,
+    title: title,
+    desc: description,
+    btnCancelOnPress: () {},
+    btnOkOnPress: okBtn,
+  )..show();
 }

@@ -24,8 +24,9 @@ class TodoCubit extends Cubit<TodoAppState> {
   getAllDataFromDB() {
     emit(LoadingDataState());
     _database.queryDb().then((value) {
+      if (todo.isNotEmpty) restData();
       todo.addAll(value);
-      // print(todo);
+      todo = todo.reversed.toList();
       addDataInTaskAndFinish();
       todo.forEach((element) {
         stateTodo.addAll(
@@ -54,35 +55,42 @@ class TodoCubit extends Cubit<TodoAppState> {
         return true;
       } else {
         finishTodo.add(todo);
-        finishTodo.reversed.toList();
+        // finishTodo = finishTodo.reversed.toList();
         return true;
       }
     }).toList();
   }
 
+  void restData() {
+    todo.clear();
+    activeTodo.clear();
+    finishTodo.clear();
+    stateTodo.clear();
+    colorStateTodo.clear();
+  }
+
   addActiveDataAndFinished(TodoModel model) {
-    bool isFinish =
-        compareToDate(model.date) == TodoState.FINISH ? true : false;
+    bool isFinish = compareDate(model.date) == TodoState.FINISH ? true : false;
     if (isFinish) {
       finishTodo.add(model);
     } else {
       activeTodo.add(model);
     }
-    finishTodo.reversed.toList();
-    activeTodo.reversed.toList();
+    // finishTodo = finishTodo.reversed.toList();
+    // activeTodo = activeTodo.reversed.toList();
   }
 
-  TodoState compareToDate(String firstData, [int isDone]) {
+  TodoState compareDate(String firstData, [int isDone]) {
     const finishTaskEqual = 1;
     if (isDone == finishTaskEqual) {
       return TodoState.DONE;
     }
     String nowDate = DateFormat('y-MM-dd').format(DateTime.now());
-    DateTime currentDate = DateTime.parse(firstData);
-    DateTime currentDateNow = DateTime.parse(nowDate);
-    if (currentDate.isAfter(currentDateNow)) {
+    DateTime saveDate = DateTime.parse(firstData);
+    DateTime currentNowDate = DateTime.parse(nowDate);
+    if (saveDate.isAfter(currentNowDate)) {
       return TodoState.ACTIVE;
-    } else if (currentDate.isBefore(currentDateNow)) {
+    } else if (saveDate.isBefore(currentNowDate)) {
       return TodoState.FINISH;
     } else {
       return TodoState.ACTIVE;
@@ -90,7 +98,7 @@ class TodoCubit extends Cubit<TodoAppState> {
   }
 
   String splitText(String firstData, [int isDone]) {
-    TodoState value = compareToDate(firstData, isDone);
+    TodoState value = compareDate(firstData, isDone);
     return value.toString().split('.').last;
   }
 
@@ -108,5 +116,24 @@ class TodoCubit extends Cubit<TodoAppState> {
         break;
     }
     return color;
+  }
+
+  void sendStateNotification(String item) {
+    if (item.contains('Edit')) {
+      emit(ChooseEditState());
+    } else {
+      emit(ChooseDeleteState());
+    }
+  }
+
+  void deleteItemFromDB(TodoModel model) {
+    emit(LoadingDeleteData());
+    _database.deleteDb(model).then((value) {
+      print('Successfully Delete');
+      emit(SuccessDeleteData());
+    }).catchError((error) {
+      print(error.toString());
+      emit(ErrorDeleteData());
+    });
   }
 }

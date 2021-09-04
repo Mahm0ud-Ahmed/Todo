@@ -1,12 +1,14 @@
 import 'dart:ui';
 
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:todo_task/models/todo_model.dart';
+import 'package:todo_task/screens/details/todo_details.dart';
+import 'package:todo_task/screens/edit/edit.dart';
 import 'package:todo_task/shared/component/components.dart';
 import 'package:todo_task/shared/logic_bloc/todo_cubit.dart';
 import 'package:todo_task/shared/logic_bloc/todo_state.dart';
-import 'package:todo_task/shared/network/local/database/todo_db.dart';
 import 'package:todo_task/shared/network/local/todo_app_state.dart';
 
 class Tasks extends StatefulWidget {
@@ -15,13 +17,12 @@ class Tasks extends StatefulWidget {
 }
 
 class _TasksState extends State<Tasks> {
-  final TodoDb data = TodoDb();
-  final List<TodoModel> taskData = [];
-
   bool _visible = false;
 
   TodoCubit _cubit;
-  List<TodoModel> todo = [];
+  List<TodoModel> _todo = [];
+  TodoModel _currentTodo;
+  TodoModel _selectedItem;
 
   @override
   void initState() {
@@ -40,12 +41,29 @@ class _TasksState extends State<Tasks> {
       child: BlocConsumer<TodoCubit, TodoAppState>(
         listener: (context, state) {
           if (state is SuccessDataState) {
-            todo = _cubit.todo.reversed.toList();
+            _todo = _cubit.todo;
+          }
+          if (state is ChooseEditState) {
+            Navigator.of(context)
+                .pushNamed(EditScreen.EDIT_SCREEN, arguments: _selectedItem);
+          }
+          if (state is ChooseDeleteState) {
+            customDialog(
+              context: context,
+              type: DialogType.QUESTION,
+              description: 'Are you sure?',
+              title: 'Delete!',
+              okBtn: () {
+                _cubit.deleteItemFromDB(_selectedItem);
+                _cubit.getAllDataFromDB();
+              },
+            );
           }
         },
         builder: (context, state) {
           if (state is InitialViewTodoScreen) {
-            _cubit = TodoCubit.get(context)..getAllDataFromDB();
+            if (_cubit == null)
+              _cubit = TodoCubit.get(context)..getAllDataFromDB();
           }
           return Stack(
             alignment: AlignmentDirectional.topCenter,
@@ -93,16 +111,27 @@ class _TasksState extends State<Tasks> {
                         child: ListView.builder(
                           physics: BouncingScrollPhysics(),
                           itemBuilder: (context, index) {
+                            _currentTodo = _todo[index];
                             return customCard(
-                              title: todo[index].title,
-                              description: todo[index].description,
-                              time: todo[index].time,
-                              date: todo[index].date,
-                              stateTask: _cubit.stateTodo[todo[index].id],
-                              colorText: _cubit.colorStateTodo[todo[index].id],
+                              title: _currentTodo.title,
+                              description: _currentTodo.description,
+                              time: _currentTodo.time,
+                              date: _currentTodo.date,
+                              stateTask: _cubit.stateTodo[_currentTodo.id],
+                              colorText: _cubit.colorStateTodo[_currentTodo.id],
+                              onSubmitPopUpMenu: (String selected) {
+                                _cubit.sendStateNotification(selected);
+                                _selectedItem = _todo[index];
+                              },
+                              onClick: () {
+                                _selectedItem = _todo[index];
+                                Navigator.of(context).pushNamed(
+                                    TodoDetails.TODO_DETAILS,
+                                    arguments: _selectedItem);
+                              },
                             );
                           },
-                          itemCount: todo.length,
+                          itemCount: _todo.length,
                         ),
                       ),
                     ),

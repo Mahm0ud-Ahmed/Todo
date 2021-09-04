@@ -11,7 +11,15 @@ class DetailsCubit extends Cubit<TodoAppState> {
 
   TodoDb _database = TodoDb();
 
-  bool isChecked = false;
+  bool isChecked;
+
+  initialCurrentStateCheckBox(int oldState) {
+    if (oldState == 1) {
+      isChecked = true;
+    } else {
+      isChecked = false;
+    }
+  }
 
   void changeStateCheckBox(bool newState) {
     isChecked = newState;
@@ -21,11 +29,21 @@ class DetailsCubit extends Cubit<TodoAppState> {
   updateItem(TodoModel model) {
     emit(LoadingUpdateState());
     _database.updateDb(model).then((value) {
-      print('Success');
+      print('Successfully Update');
       emit(SuccessUpdateState());
     }).catchError((error) {
       print(error.toString());
       emit(ErrorUpdateState());
     });
+  }
+
+  int handleDataBeforeSetToDB() {
+    const taskDone = 1;
+    const taskActive = 0;
+    if (isChecked) {
+      return taskDone;
+    } else {
+      return taskActive;
+    }
   }
 }
