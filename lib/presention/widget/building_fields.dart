@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:todo_task/presention/widget/components.dart';
 import 'package:todo_task/presention/widget/custom_text_field.dart';
 
 class BuildingFields extends StatelessWidget {
@@ -90,6 +89,24 @@ class BuildingFields extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  Future<DateTime> datePicker(BuildContext context) async {
+    return await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime.now(),
+      lastDate: DateTime.now().add(
+        const Duration(days: 30),
+      ),
+    );
+  }
+
+  Future<TimeOfDay> timePicker(BuildContext context) async {
+    return await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
     );
   }
 }

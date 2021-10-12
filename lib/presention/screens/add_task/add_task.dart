@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:todo_task/bloc/business_logic/todo_cubit.dart';
+import 'package:todo_task/bloc/business_logic/todo_state.dart';
 import 'package:todo_task/config/route/const_route.dart';
 import 'package:todo_task/data/model/todo_model.dart';
 import 'package:todo_task/data/repository/todo_repository.dart';
 import 'package:todo_task/presention/widget/building_fields.dart';
+import 'package:todo_task/presention/widget/components.dart';
 import 'package:todo_task/presention/widget/custom_button.dart';
 
 class AddTask extends StatefulWidget {
@@ -68,19 +71,32 @@ class _AddTaskState extends State<AddTask> {
                   descriptionController: _descriptionController,
                   dateController: _dateController,
                 ),
-                Container(
-                  margin: const EdgeInsets.symmetric(vertical: 35),
-                  child: CustomButton(
-                    title: 'ADD TODO',
-                    color: Colors.deepPurpleAccent.shade200,
-                    onClick: () async {
-                      if (_formKey.currentState.validate()) {
-                        final isAdd = await insertTodo();
-                        if (isAdd) {
-                          Navigator.pushReplacementNamed(context, bottomNav);
+                BlocListener<TodoCubit, TodoAppState>(
+                  listenWhen: (previous, current) {
+                    return previous != current;
+                  },
+                  listener: (context, state) {
+                    if (state is SuccessInsertState) {
+                      showToast(state.message, Colors.green);
+                    }
+                    if (state is ErrorInsertState) {
+                      showToast(state.message, Colors.red);
+                    }
+                  },
+                  child: Container(
+                    margin: const EdgeInsets.symmetric(vertical: 35),
+                    child: CustomButton(
+                      title: 'ADD TODO',
+                      color: Colors.deepPurpleAccent.shade200,
+                      onClick: () async {
+                        if (_formKey.currentState.validate()) {
+                          final isAdd = await insertTodo();
+                          if (isAdd) {
+                            Navigator.pushReplacementNamed(context, bottomNav);
+                          }
                         }
-                      }
-                    },
+                      },
+                    ),
                   ),
                 ),
               ],

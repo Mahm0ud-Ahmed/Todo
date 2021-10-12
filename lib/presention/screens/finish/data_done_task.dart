@@ -25,6 +25,7 @@ class _DataDoneTaskState extends State<DataDoneTask> {
   void initState() {
     super.initState();
     _cubit = TodoCubit.get(context);
+    _doneTodo = _cubit.finishTodo;
   }
 
   @override
@@ -33,44 +34,36 @@ class _DataDoneTaskState extends State<DataDoneTask> {
     return Container(
       margin: const EdgeInsets.only(top: 66),
       padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 12),
-      child: BlocBuilder<TodoCubit, TodoAppState>(
-        builder: (context, state) {
-          if (state is SuccessDataState) {
-            _doneTodo = state.finishTodo;
-          }
-          return ListView.builder(
-            physics: const BouncingScrollPhysics(),
-            itemCount: index == _doneTodo.length
-                ? _doneTodo.length + 1
-                : _doneTodo.length,
-            itemBuilder: (context, index) {
-              index = index;
-              _currentTodo = _doneTodo[index];
-              return Column(
-                children: [
-                  TodoCard(
-                    todo: _currentTodo,
-                    stateTask: _cubit.stateTodo[_currentTodo.id],
-                    colorText: _cubit.colorStateTodo[_currentTodo.id],
-                    onSubmitPopUpMenu: (String selected) {
-                      _selectedItem = _doneTodo[index];
-                      checkChooseEditOrDeleteBtn(selected);
-                    },
-                    onClick: () {
-                      _selectedItem = _doneTodo[index];
-                      Navigator.of(context).pushNamed(
-                        detailsScreen,
-                        arguments: _selectedItem,
-                      );
-                    },
-                  ),
-                  if (index == _doneTodo.length - 1)
-                    const SizedBox(
-                      height: 30,
-                    ),
-                ],
-              );
-            },
+      child: ListView.builder(
+        physics: const BouncingScrollPhysics(),
+        itemCount:
+            index == _doneTodo.length ? _doneTodo.length + 1 : _doneTodo.length,
+        itemBuilder: (context, index) {
+          index = index;
+          _currentTodo = _doneTodo[index];
+          return Column(
+            children: [
+              TodoCard(
+                todo: _currentTodo,
+                stateTask: _cubit.stateTodo[_currentTodo.id],
+                colorText: _cubit.colorStateTodo[_currentTodo.id],
+                onSubmitPopUpMenu: (String selected) {
+                  _selectedItem = _doneTodo[index];
+                  checkChooseEditOrDeleteBtn(selected);
+                },
+                onClick: () {
+                  _selectedItem = _doneTodo[index];
+                  Navigator.of(context).pushNamed(
+                    detailsScreen,
+                    arguments: _selectedItem,
+                  );
+                },
+              ),
+              if (index == _doneTodo.length - 1)
+                const SizedBox(
+                  height: 30,
+                ),
+            ],
           );
         },
       ),

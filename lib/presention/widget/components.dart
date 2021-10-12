@@ -1,5 +1,6 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 AwesomeDialog customDialog({
   @required BuildContext context,
@@ -19,20 +20,14 @@ AwesomeDialog customDialog({
   )..show();
 }
 
-Future<DateTime> datePicker(BuildContext context) async {
-  return await showDatePicker(
-    context: context,
-    initialDate: DateTime.now(),
-    firstDate: DateTime.now(),
-    lastDate: DateTime.now().add(
-      const Duration(days: 30),
-    ),
-  );
-}
-
-Future<TimeOfDay> timePicker(BuildContext context) async {
-  return await showTimePicker(
-    context: context,
-    initialTime: TimeOfDay.now(),
+void showToast(String msg, Color color) {
+  Fluttertoast.showToast(
+    msg: msg,
+    toastLength: Toast.LENGTH_LONG,
+    gravity: ToastGravity.BOTTOM,
+    timeInSecForIosWeb: 1,
+    backgroundColor: color,
+    textColor: Colors.white,
+    fontSize: 16.0,
   );
 }

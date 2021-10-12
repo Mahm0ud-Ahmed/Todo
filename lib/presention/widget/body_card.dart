@@ -72,6 +72,7 @@ class BodyCard extends StatelessWidget {
           onTap: onClick,
           child: SizedBox(
             width: double.infinity,
+            // height: double.infinity,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [

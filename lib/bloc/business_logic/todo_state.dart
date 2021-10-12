@@ -13,18 +13,14 @@ class SuccessDataState extends TodoAppState {
 
 class ErrorDataState extends TodoAppState {}
 
-class ChooseEditState extends TodoAppState {}
-
-class ChooseDeleteState extends TodoAppState {}
-
-class SuccessDeleteData extends TodoAppState {
+class SuccessInsertState extends TodoAppState {
   final String message;
-  SuccessDeleteData({this.message});
+  SuccessInsertState({this.message});
 }
 
-class ErrorDeleteData extends TodoAppState {
+class ErrorInsertState extends TodoAppState {
   final String message;
-  ErrorDeleteData({this.message});
+  ErrorInsertState({this.message});
 }
 
 class SuccessUpdateState extends TodoAppState {
@@ -37,12 +33,12 @@ class ErrorUpdateState extends TodoAppState {
   ErrorUpdateState({this.message});
 }
 
-class SuccessInsertState extends TodoAppState {
+class SuccessDeleteData extends TodoAppState {
   final String message;
-  SuccessInsertState({this.message});
+  SuccessDeleteData({this.message});
 }
 
-class ErrorInsertState extends TodoAppState {
+class ErrorDeleteData extends TodoAppState {
   final String message;
-  ErrorInsertState({this.message});
+  ErrorDeleteData({this.message});
 }

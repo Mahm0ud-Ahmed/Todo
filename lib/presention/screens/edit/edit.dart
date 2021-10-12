@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:todo_task/bloc/business_logic/todo_cubit.dart';
+import 'package:todo_task/bloc/business_logic/todo_state.dart';
 import 'package:todo_task/config/route/const_route.dart';
 import 'package:todo_task/data/model/todo_model.dart';
 import 'package:todo_task/presention/widget/building_fields.dart';
+import 'package:todo_task/presention/widget/components.dart';
 import 'package:todo_task/presention/widget/custom_button.dart';
 
 class EditScreen extends StatefulWidget {
@@ -84,22 +87,35 @@ class _EditScreenState extends State<EditScreen> {
                   timeController: _timeController,
                   titleController: _titleController,
                 ),
-                Container(
-                  margin: const EdgeInsets.symmetric(vertical: 35),
-                  child: CustomButton(
-                    title: 'Update Todo',
-                    color: Colors.deepPurpleAccent.shade200,
-                    onClick: () async {
-                      if (_formKey.currentState.validate()) {
-                        final isUpdate = await updateCurrentTodo();
-                        if (isUpdate) {
-                          Navigator.of(context).pushNamedAndRemoveUntil(
-                            bottomNav,
-                            (route) => false,
-                          );
+                BlocListener<TodoCubit, TodoAppState>(
+                  listenWhen: (previous, current) {
+                    return previous != current;
+                  },
+                  listener: (context, state) {
+                    if (state is SuccessUpdateState) {
+                      showToast(state.message, Colors.green);
+                    }
+                    if (state is ErrorUpdateState) {
+                      showToast(state.message, Colors.red);
+                    }
+                  },
+                  child: Container(
+                    margin: const EdgeInsets.symmetric(vertical: 35),
+                    child: CustomButton(
+                      title: 'Update Todo',
+                      color: Colors.deepPurpleAccent.shade200,
+                      onClick: () async {
+                        if (_formKey.currentState.validate()) {
+                          final isUpdate = await updateCurrentTodo();
+                          if (isUpdate) {
+                            Navigator.of(context).pushNamedAndRemoveUntil(
+                              bottomNav,
+                              (route) => false,
+                            );
+                          }
                         }
-                      }
-                    },
+                      },
+                    ),
                   ),
                 ),
               ],

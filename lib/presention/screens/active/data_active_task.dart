@@ -25,6 +25,7 @@ class _DataActiveTaskState extends State<DataActiveTask> {
   void initState() {
     super.initState();
     _cubit = TodoCubit.get(context);
+    _activeTodo = _cubit.activeTodo;
   }
 
   @override
@@ -33,44 +34,37 @@ class _DataActiveTaskState extends State<DataActiveTask> {
     return Container(
       margin: const EdgeInsets.only(top: 66),
       padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 12),
-      child: BlocBuilder<TodoCubit, TodoAppState>(
-        builder: (context, state) {
-          if (state is SuccessDataState) {
-            _activeTodo = state.activeTodo;
-          }
-          return ListView.builder(
-            physics: const BouncingScrollPhysics(),
-            itemCount: index == _activeTodo.length
-                ? _activeTodo.length + 1
-                : _activeTodo.length,
-            itemBuilder: (context, index) {
-              index = index;
-              _currentTodo = _activeTodo[index];
-              return Column(
-                children: [
-                  TodoCard(
-                    todo: _currentTodo,
-                    stateTask: _cubit.stateTodo[_currentTodo.id],
-                    colorText: _cubit.colorStateTodo[_currentTodo.id],
-                    onSubmitPopUpMenu: (String selected) {
-                      _selectedItem = _activeTodo[index];
-                      checkChooseEditOrDeleteBtn(selected);
-                    },
-                    onClick: () {
-                      _selectedItem = _activeTodo[index];
-                      Navigator.of(context).pushNamed(
-                        detailsScreen,
-                        arguments: _selectedItem,
-                      );
-                    },
-                  ),
-                  if (index == _activeTodo.length - 1)
-                    const SizedBox(
-                      height: 30,
-                    ),
-                ],
-              );
-            },
+      child: ListView.builder(
+        physics: const BouncingScrollPhysics(),
+        itemCount: index == _activeTodo.length
+            ? _activeTodo.length + 1
+            : _activeTodo.length,
+        itemBuilder: (context, index) {
+          index = index;
+          _currentTodo = _activeTodo[index];
+          return Column(
+            children: [
+              TodoCard(
+                todo: _currentTodo,
+                stateTask: _cubit.stateTodo[_currentTodo.id],
+                colorText: _cubit.colorStateTodo[_currentTodo.id],
+                onSubmitPopUpMenu: (String selected) {
+                  _selectedItem = _activeTodo[index];
+                  checkChooseEditOrDeleteBtn(selected);
+                },
+                onClick: () {
+                  _selectedItem = _activeTodo[index];
+                  Navigator.of(context).pushNamed(
+                    detailsScreen,
+                    arguments: _selectedItem,
+                  );
+                },
+              ),
+              if (index == _activeTodo.length - 1)
+                const SizedBox(
+                  height: 30,
+                ),
+            ],
           );
         },
       ),

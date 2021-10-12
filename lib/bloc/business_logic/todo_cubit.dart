@@ -21,7 +21,6 @@ class TodoCubit extends Cubit<TodoAppState> {
   Map<int, Color> colorStateTodo = {};
 
   void getAllDataFromDB() {
-    // emit(LoadingDataState());
     _todoRepository.queryDb().then((data) {
       if (allTodo.isNotEmpty) resetData();
       allTodo.addAll(data);
@@ -115,16 +114,7 @@ class TodoCubit extends Cubit<TodoAppState> {
     return color;
   }
 
-  void sendStateNotification(String item) {
-    if (item.contains('Edit')) {
-      emit(ChooseEditState());
-    } else {
-      emit(ChooseDeleteState());
-    }
-  }
-
   Future<bool> insertItem(TodoModel model) async {
-    // emit(LoadingUpdateState());
     bool isUpdate;
     try {
       final int index = await _todoRepository.insertDb(model);
@@ -143,7 +133,6 @@ class TodoCubit extends Cubit<TodoAppState> {
   }
 
   Future<bool> updateItem(TodoModel model) async {
-    // emit(LoadingUpdateState());
     bool isUpdate;
     try {
       final int index = await _todoRepository.updateDb(model);
@@ -162,9 +151,7 @@ class TodoCubit extends Cubit<TodoAppState> {
   }
 
   void deleteItemFromDB(TodoModel model) {
-    // emit(LoadingDeleteData());
     _todoRepository.deleteDb(model).then((value) {
-      print('Successfully Delete');
       emit(SuccessDeleteData(message: 'Successfully Delete'));
     }).catchError((error) {
       print(error.toString());
