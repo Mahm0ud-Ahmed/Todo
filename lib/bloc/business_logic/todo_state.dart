@@ -4,6 +4,11 @@ abstract class TodoAppState {}
 
 class InitialViewTodoScreen extends TodoAppState {}
 
+class ErrorSignState extends TodoAppState {
+  final String message;
+  ErrorSignState({this.message});
+}
+
 class SuccessDataState extends TodoAppState {
   final List<TodoModel> allTodo;
   final List<TodoModel> activeTodo;

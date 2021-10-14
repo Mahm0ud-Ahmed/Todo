@@ -41,17 +41,11 @@ class _BottomNavState extends State<BottomNav> {
         title: const Text('ToDo App'),
         elevation: 0,
         actions: [
-          BlocBuilder<TodoCubit, TodoAppState>(
-            builder: (context, state) {
-              return IconButton(
-                icon: const Icon(Icons.exit_to_app),
-                onPressed: () async {
-                  await FirebaseAuth.instance.signOut();
-                  Navigator.of(context).pushReplacementNamed(signIn);
-                  await StoragePref.clearStorage();
-                  TodoCubit.get(context).changeStyle(false);
-                },
-              );
+          IconButton(
+            icon: const Icon(Icons.exit_to_app),
+            onPressed: () async {
+              await FirebaseAuth.instance.signOut();
+              Navigator.of(context).pushReplacementNamed(signIn);
             },
           ),
         ],

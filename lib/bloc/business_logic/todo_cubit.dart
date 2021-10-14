@@ -1,9 +1,12 @@
+import 'package:dartz/dartz.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:todo_task/bloc/business_logic/todo_state.dart';
 import 'package:todo_task/constant.dart';
 import 'package:todo_task/data/datasources/local/storage_pref.dart';
+import 'package:todo_task/data/datasources/remot/sign_mail_firebase.dart';
 import 'package:todo_task/data/model/todo_model.dart';
 import 'package:todo_task/data/repository/todo_repository.dart';
 
@@ -21,6 +24,38 @@ class TodoCubit extends Cubit<TodoAppState> {
 
   Map<int, String> stateTodo = {};
   Map<int, Color> colorStateTodo = {};
+
+  Future<bool> signIn({
+    @required String email,
+    @required String password,
+  }) async {
+    bool isLogin;
+    final result =
+        await SignMailFirebase.signIn(email: email, password: password);
+    result.fold((l) {
+      emit(ErrorSignState(message: l));
+      isLogin = false;
+    }, (r) {
+      isLogin = true;
+    });
+    return isLogin;
+  }
+
+  Future<bool> signUp({
+    @required String email,
+    @required String password,
+  }) async {
+    bool isRegister;
+    final result =
+        await SignMailFirebase.signUp(email: email, password: password);
+    result.fold((l) {
+      emit(ErrorSignState(message: l));
+      isRegister = false;
+    }, (r) {
+      isRegister = true;
+    });
+    return isRegister;
+  }
 
   void getAllDataFromDB() {
     _todoRepository.queryDb().then((data) {

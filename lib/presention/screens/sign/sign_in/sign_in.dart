@@ -1,6 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:todo_task/bloc/business_logic/todo_cubit.dart';
+import 'package:todo_task/bloc/business_logic/todo_state.dart';
 import 'package:todo_task/config/route/const_route.dart';
+import 'package:todo_task/presention/widget/components.dart';
 import 'package:todo_task/presention/widget/custom_button.dart';
 import 'package:todo_task/presention/widget/custom_text_field.dart';
 
@@ -29,131 +33,141 @@ class _SignInState extends State<SignIn> {
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
-      body: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
-        margin: const EdgeInsets.only(top: 50),
-        width: double.infinity,
-        height: double.infinity,
-        clipBehavior: Clip.antiAlias,
-        decoration: BoxDecoration(
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(42),
-            topRight: Radius.circular(42),
+      body: BlocListener<TodoCubit, TodoAppState>(
+        listenWhen: (previous, current) {
+          return previous != current;
+        },
+        listener: (context, state) {
+          if (state is ErrorSignState) {
+            showToast(state.message, Colors.red);
+          }
+        },
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          margin: const EdgeInsets.only(top: 50),
+          width: double.infinity,
+          height: double.infinity,
+          clipBehavior: Clip.antiAlias,
+          decoration: BoxDecoration(
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(42),
+              topRight: Radius.circular(42),
+            ),
+            color: Theme.of(context).primaryColor,
           ),
-          color: Theme.of(context).primaryColor,
-        ),
-        child: SingleChildScrollView(
-          physics: const BouncingScrollPhysics(),
-          child: Center(
-            child: Form(
-              key: _formState,
-              child: Column(
-                children: [
-                  const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 50),
-                    child: Text(
-                      'Sign In',
-                      style: TextStyle(
-                        fontSize: 32,
-                        fontWeight: FontWeight.bold,
+          child: SingleChildScrollView(
+            physics: const BouncingScrollPhysics(),
+            child: Center(
+              child: Form(
+                key: _formState,
+                child: Column(
+                  children: [
+                    const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 50),
+                      child: Text(
+                        'Sign In',
+                        style: TextStyle(
+                          fontSize: 32,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
-                  ),
-                  CustomTextField(
-                    controller: _emailController,
-                    textType: TextInputType.emailAddress,
-                    label: 'Email Address',
-                    prefixIcon: const Icon(Icons.email),
-                    validator: (String value) {
-                      if (value.isEmpty) {
-                        return 'This field should not be empty';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  CustomTextField(
-                    controller: _passwordController,
-                    textType: TextInputType.text,
-                    visibility: _visibility,
-                    label: 'Password',
-                    prefixIcon: const Icon(Icons.security),
-                    validator: (String value) {
-                      if (value.isEmpty) {
-                        return 'This field should not be empty';
-                      }
-                      return null;
-                    },
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        _visibility ? Icons.visibility_off : Icons.visibility,
-                      ),
-                      onPressed: () {
-                        setState(() {
-                          _visibility = !_visibility;
-                        });
+                    CustomTextField(
+                      controller: _emailController,
+                      textType: TextInputType.emailAddress,
+                      label: 'Email Address',
+                      prefixIcon: const Icon(Icons.email),
+                      validator: (String value) {
+                        if (value.isEmpty) {
+                          return 'This field should not be empty';
+                        }
+                        return null;
                       },
                     ),
-                  ),
-                  Align(
-                    alignment: Alignment.bottomRight,
-                    child: TextButton(
-                      child: const Text('Forget Password?'),
-                      onPressed: () {},
+                    const SizedBox(
+                      height: 20,
                     ),
-                  ),
-                  const SizedBox(
-                    height: 40,
-                  ),
-                  if (_isLoading)
-                    const Center(child: CircularProgressIndicator())
-                  else
-                    CustomButton(
-                      title: 'Sign In',
-                      onClick: () async {
-                        if (_formState.currentState.validate()) {
+                    CustomTextField(
+                      controller: _passwordController,
+                      textType: TextInputType.text,
+                      visibility: _visibility,
+                      label: 'Password',
+                      prefixIcon: const Icon(Icons.security),
+                      validator: (String value) {
+                        if (value.isEmpty) {
+                          return 'This field should not be empty';
+                        }
+                        return null;
+                      },
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _visibility ? Icons.visibility_off : Icons.visibility,
+                        ),
+                        onPressed: () {
                           setState(() {
-                            _isLoading = !_isLoading;
+                            _visibility = !_visibility;
                           });
-                          final user = await signInFirebase();
-                          if (user != null) {
-                            return Navigator.of(context)
-                                .pushNamedAndRemoveUntil(
-                              bottomNav,
-                              (route) => false,
-                            );
-                          } else {
+                        },
+                      ),
+                    ),
+                    Align(
+                      alignment: Alignment.bottomRight,
+                      child: TextButton(
+                        child: const Text('Forget Password?'),
+                        onPressed: () {},
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 40,
+                    ),
+                    if (_isLoading)
+                      const Center(child: CircularProgressIndicator())
+                    else
+                      CustomButton(
+                        title: 'Sign In',
+                        onClick: () async {
+                          if (_formState.currentState.validate()) {
                             setState(() {
                               _isLoading = !_isLoading;
                             });
+                            final user = await signInFirebase(context);
+                            if (user) {
+                              return Navigator.of(context)
+                                  .pushNamedAndRemoveUntil(
+                                bottomNav,
+                                (route) => false,
+                              );
+                            } else {
+                              setState(() {
+                                _isLoading = !_isLoading;
+                              });
+                            }
                           }
-                        }
-                      },
-                      color: Colors.deepPurpleAccent.shade200,
-                    ),
-                  const SizedBox(
-                    height: 60,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Text(
-                        'I\'m a new user.',
-                        style: TextStyle(
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      TextButton(
-                        child: const Text('Sign Up'),
-                        onPressed: () {
-                          Navigator.of(context).pushReplacementNamed(signUp);
                         },
+                        color: Colors.deepPurpleAccent.shade200,
                       ),
-                    ],
-                  )
-                ],
+                    const SizedBox(
+                      height: 60,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text(
+                          'I\'m a new user.',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        TextButton(
+                          child: const Text('Sign Up'),
+                          onPressed: () {
+                            Navigator.of(context).pushReplacementNamed(signUp);
+                          },
+                        ),
+                      ],
+                    )
+                  ],
+                ),
               ),
             ),
           ),
@@ -162,10 +176,8 @@ class _SignInState extends State<SignIn> {
     );
   }
 
-  Future<UserCredential> signInFirebase() async {
-    return await SignMailFirebase().signIn(
-      _emailController.text,
-      _passwordController.text,
-    );
+  Future<bool> signInFirebase(BuildContext context) async {
+    return TodoCubit.get(context).signIn(
+        email: _emailController.text, password: _passwordController.text);
   }
 }

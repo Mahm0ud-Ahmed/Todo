@@ -1,42 +1,56 @@
+import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 
+// ignore: avoid_classes_with_only_static_members
 class SignMailFirebase {
-  UserCredential _userCredential;
-
-  Future<UserCredential> signIn(String email, String password) async {
+  static Future<Either<String, UserCredential>> signIn({
+    @required String email,
+    @required String password,
+  }) async {
     try {
-      _userCredential = await FirebaseAuth.instance
-          .signInWithEmailAndPassword(email: email, password: password);
-      print('trueeeeeeeeeeeeeeeeeeeeeeeeeeee');
+      return Right(
+        await FirebaseAuth.instance
+            .signInWithEmailAndPassword(email: email, password: password),
+      );
     } on FirebaseAuthException catch (e) {
-      print('faaaaaaaaaaaaaaaaaaaaaaaalse');
       if (e.code == 'user-not-found') {
-        print('No user found for that email.');
+        return const Left(
+          'No user found for that email',
+        );
       } else if (e.code == 'wrong-password') {
-        print('Wrong password provided for that user.');
+        return const Left(
+          'Wrong password provided for that user',
+        );
+      } else {
+        return Left(e.code);
       }
     }
-    return _userCredential;
   }
 
-  Future<UserCredential> signUp(String email, String password) async {
+  static Future<Either<String, UserCredential>> signUp({
+    @required String email,
+    @required String password,
+  }) async {
     try {
-      _userCredential =
-          await FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: email,
-        password: password,
+      return Right(
+        await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          email: email,
+          password: password,
+        ),
       );
-      print('trueeeeeeeeeeeeeeeeeeeeeeeeeeee');
     } on FirebaseAuthException catch (e) {
-      print('faaaaaaaaaaaaaaaaaaaaaaaalse');
       if (e.code == 'weak-password') {
-        print('The password provided is too weak.');
+        return const Left(
+          'The password provided is too weak',
+        );
       } else if (e.code == 'email-already-in-use') {
-        print('The account already exists for that email.');
+        return const Left(
+          'The account already exists for that email',
+        );
+      } else {
+        return Left(e.code);
       }
-    } catch (e) {
-      print(e);
     }
-    return _userCredential;
   }
 }
