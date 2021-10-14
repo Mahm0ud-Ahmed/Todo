@@ -16,7 +16,6 @@ class TodoRepository {
     for (final model in map) {
       list.add(TodoModel.fromMab(model));
     }
-    // _database.close();
     return list;
   }
 
@@ -26,7 +25,6 @@ class TodoRepository {
     final int index = await _database.insert(
         ConstantDb.TABLE_NAME, todo.toMap(),
         conflictAlgorithm: ConflictAlgorithm.replace);
-    // _database.close();
     return index;
   }
 
@@ -35,7 +33,6 @@ class TodoRepository {
     final int index = await _database.update(
         ConstantDb.TABLE_NAME, todo.toMap(),
         where: '${ConstantDb.COLUMN_ID} = ?', whereArgs: [todo.id]);
-    // _database.close();
     return index;
   }
 
@@ -44,7 +41,6 @@ class TodoRepository {
 
     final int index = await _database.delete(ConstantDb.TABLE_NAME,
         where: '${ConstantDb.COLUMN_ID} = ?', whereArgs: [todo.id]);
-    // _database.close();
     return index;
   }
 }
