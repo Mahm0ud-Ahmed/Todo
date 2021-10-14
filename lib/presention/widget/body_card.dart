@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:todo_task/constant.dart';
 import 'package:todo_task/data/model/todo_model.dart';
 
 class BodyCard extends StatelessWidget {
@@ -40,8 +41,8 @@ class BodyCard extends StatelessWidget {
               child: Text(
                 stateTask,
                 textAlign: TextAlign.center,
-                style: const TextStyle(
-                  color: Colors.white,
+                style: TextStyle(
+                  color: switchState ? Colors.white : Colors.grey.shade900,
                   fontSize: 16,
                 ),
               ),
@@ -80,8 +81,8 @@ class BodyCard extends StatelessWidget {
                   todo.title,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    color: Colors.indigo.shade900,
+                  style: const TextStyle(
+                    // color: Colors.indigo.shade900,
                     fontSize: 20,
                   ),
                 ),
@@ -93,8 +94,8 @@ class BodyCard extends StatelessWidget {
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
-                    color: Colors.grey.shade400,
-                    fontSize: 16,
+                    color: Colors.grey.shade500,
+                    fontSize: 14,
                   ),
                 ),
                 const SizedBox(
@@ -104,7 +105,6 @@ class BodyCard extends StatelessWidget {
                   children: [
                     const Icon(
                       Icons.access_time_outlined,
-                      color: Colors.grey,
                     ),
                     const SizedBox(
                       width: 4,
@@ -112,14 +112,13 @@ class BodyCard extends StatelessWidget {
                     Text(
                       todo.time,
                       style: TextStyle(
-                        color: Colors.indigo.shade900,
-                        fontSize: 16,
+                        color: Colors.grey.shade500,
+                        fontSize: 14,
                       ),
                     ),
                     const Spacer(),
                     const Icon(
                       Icons.date_range,
-                      color: Colors.grey,
                     ),
                     const SizedBox(
                       width: 4,
@@ -127,8 +126,8 @@ class BodyCard extends StatelessWidget {
                     Text(
                       todo.date,
                       style: TextStyle(
-                        color: Colors.indigo.shade900,
-                        fontSize: 16,
+                        color: Colors.grey.shade500,
+                        fontSize: 14,
                       ),
                     ),
                     const Spacer(),

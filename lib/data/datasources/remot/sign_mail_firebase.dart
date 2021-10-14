@@ -7,7 +7,9 @@ class SignMailFirebase {
     try {
       _userCredential = await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password);
+      print('trueeeeeeeeeeeeeeeeeeeeeeeeeeee');
     } on FirebaseAuthException catch (e) {
+      print('faaaaaaaaaaaaaaaaaaaaaaaalse');
       if (e.code == 'user-not-found') {
         print('No user found for that email.');
       } else if (e.code == 'wrong-password') {
@@ -24,7 +26,9 @@ class SignMailFirebase {
         email: email,
         password: password,
       );
+      print('trueeeeeeeeeeeeeeeeeeeeeeeeeeee');
     } on FirebaseAuthException catch (e) {
+      print('faaaaaaaaaaaaaaaaaaaaaaaalse');
       if (e.code == 'weak-password') {
         print('The password provided is too weak.');
       } else if (e.code == 'email-already-in-use') {

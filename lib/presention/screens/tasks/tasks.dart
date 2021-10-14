@@ -1,5 +1,7 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:todo_task/config/style/colors.dart';
+import 'package:todo_task/constant.dart';
 import 'package:todo_task/presention/screens/tasks/data_all_task.dart';
 import 'package:todo_task/presention/widget/page_title.dart';
 
@@ -16,9 +18,9 @@ class _TasksState extends State<Tasks> {
       children: [
         Container(
           margin: const EdgeInsets.only(top: 32),
-          decoration: const BoxDecoration(
-            color: Color(0xfff0f4fd),
-            borderRadius: BorderRadius.only(
+          decoration: BoxDecoration(
+            color: Theme.of(context).primaryColor,
+            borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(54),
               topRight: Radius.circular(54),
             ),

@@ -2,7 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:todo_task/config/route/const_route.dart';
 import 'package:todo_task/presention/screens/sign/sign_up/widget/build_item_text_field.dart';
-import 'package:todo_task/presention/widget/components.dart';
 import 'package:todo_task/presention/widget/custom_button.dart';
 
 import '../../../../data/datasources/remot/sign_mail_firebase.dart';
@@ -35,9 +34,8 @@ class _SignUpState extends State<SignUp> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey.shade50,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        iconTheme: const IconThemeData(color: Colors.black),
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
@@ -52,7 +50,7 @@ class _SignUpState extends State<SignUp> {
             topLeft: Radius.circular(42),
             topRight: Radius.circular(42),
           ),
-          color: Colors.grey[200],
+          color: Theme.of(context).primaryColor,
         ),
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
@@ -97,6 +95,10 @@ class _SignUpState extends State<SignUp> {
                             signIn,
                             (route) => false,
                           );
+                        } else {
+                          setState(() {
+                            _isLoading = !_isLoading;
+                          });
                         }
                       }
                     },

@@ -7,6 +7,7 @@ class Sign extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).primaryColor,
       body: Center(
         child: SingleChildScrollView(
           child: Column(
@@ -27,11 +28,10 @@ class Sign extends StatelessWidget {
                   borderRadius: const BorderRadius.all(Radius.circular(24)),
                   boxShadow: [
                     BoxShadow(
-                      blurRadius: 60,
+                      blurRadius: 4,
                       color: Colors.white.withOpacity(1),
                     ),
                   ],
-                  color: Colors.grey.shade300,
                   image: const DecorationImage(
                     image: AssetImage('assets/images/sign.png'),
                     fit: BoxFit.cover,
@@ -77,7 +77,7 @@ class Sign extends StatelessWidget {
                   child: const Text(
                     'Sign In',
                     style: TextStyle(
-                      color: Colors.black,
+                      color: Colors.white,
                       fontWeight: FontWeight.bold,
                     ),
                   ),

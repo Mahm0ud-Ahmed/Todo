@@ -13,6 +13,8 @@ class SuccessDataState extends TodoAppState {
 
 class ErrorDataState extends TodoAppState {}
 
+class ConnectLoadingDBState extends TodoAppState {}
+
 class SuccessInsertState extends TodoAppState {
   final String message;
   SuccessInsertState({this.message});
@@ -41,4 +43,9 @@ class SuccessDeleteData extends TodoAppState {
 class ErrorDeleteData extends TodoAppState {
   final String message;
   ErrorDeleteData({this.message});
+}
+
+class ChangeStyleMode extends TodoAppState {
+  final bool styleMode;
+  ChangeStyleMode({this.styleMode});
 }

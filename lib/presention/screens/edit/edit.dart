@@ -46,7 +46,7 @@ class _EditScreenState extends State<EditScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xfff0f4fd),
+      backgroundColor: Theme.of(context).primaryColor,
       appBar: AppBar(
         title: const Text('Edit ToDo'),
       ),
@@ -74,7 +74,6 @@ class _EditScreenState extends State<EditScreen> {
                         'Today',
                         style: Theme.of(context).textTheme.headline4.copyWith(
                               fontWeight: FontWeight.bold,
-                              color: Colors.indigo.shade900,
                             ),
                       ),
                     ],
@@ -101,19 +100,27 @@ class _EditScreenState extends State<EditScreen> {
                   },
                   child: Container(
                     margin: const EdgeInsets.symmetric(vertical: 35),
-                    child: CustomButton(
-                      title: 'Update Todo',
-                      color: Colors.deepPurpleAccent.shade200,
-                      onClick: () async {
-                        if (_formKey.currentState.validate()) {
-                          final isUpdate = await updateCurrentTodo();
-                          if (isUpdate) {
-                            Navigator.of(context).pushNamedAndRemoveUntil(
-                              bottomNav,
-                              (route) => false,
-                            );
-                          }
-                        }
+                    child: BlocBuilder<TodoCubit, TodoAppState>(
+                      builder: (context, state) {
+                        return state is! ConnectLoadingDBState
+                            ? CustomButton(
+                                title: 'Update Todo',
+                                color: Colors.deepPurpleAccent.shade200,
+                                onClick: () async {
+                                  if (_formKey.currentState.validate()) {
+                                    final isUpdate = await updateCurrentTodo();
+                                    if (isUpdate) {
+                                      Navigator.of(context)
+                                          .pushNamedAndRemoveUntil(
+                                        bottomNav,
+                                        (route) => false,
+                                      );
+                                      TodoCubit.get(context).getAllDataFromDB();
+                                    }
+                                  }
+                                },
+                              )
+                            : const CircularProgressIndicator();
                       },
                     ),
                   ),

@@ -3,8 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:todo_task/bloc/business_logic/todo_cubit.dart';
 import 'package:todo_task/bloc/business_logic/todo_state.dart';
 import 'package:todo_task/config/route/const_route.dart';
+import 'package:todo_task/config/style/colors.dart';
 import 'package:todo_task/data/model/todo_model.dart';
 import 'package:todo_task/presention/widget/components.dart';
+
+import '../../../constant.dart';
 
 class TodoDetails extends StatefulWidget {
   final TodoModel todo;
@@ -34,6 +37,10 @@ class _TodoDetailsState extends State<TodoDetails> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).primaryColor,
+      appBar: AppBar(
+        title: const Text('Details ToDo'),
+      ),
       body: SafeArea(
         child: Container(
           margin: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
@@ -60,6 +67,7 @@ class _TodoDetailsState extends State<TodoDetails> {
                   ),
                   Checkbox(
                     value: _isCheck,
+                    activeColor: btnNavIconDarkColor,
                     onChanged: (newState) {
                       setState(() {
                         _isCheck = newState;
@@ -72,27 +80,28 @@ class _TodoDetailsState extends State<TodoDetails> {
           ),
         ),
       ),
-      floatingActionButton: BlocListener<TodoCubit, TodoAppState>(
-        listenWhen: (previous, current) {
-          return previous != current;
-        },
+      floatingActionButton: BlocConsumer<TodoCubit, TodoAppState>(
         listener: (context, state) {
           if (state is SuccessUpdateState) {
             showToast(state.message, Colors.green);
-          }
-          if (state is ErrorUpdateState) {
+            TodoCubit.get(context).getAllDataFromDB();
+          } else if (state is ErrorUpdateState) {
             showToast(state.message, Colors.red);
           }
         },
-        child: FloatingActionButton(
-          child: const Icon(Icons.done),
-          onPressed: () {
-            widget.todo.isFinish = handleDataBeforeSetToDB();
-            TodoCubit.get(context).updateItem(widget.todo);
-            Navigator.of(context)
-                .pushNamedAndRemoveUntil(bottomNav, (route) => false);
-          },
-        ),
+        builder: (context, state) {
+          return state is! ConnectLoadingDBState
+              ? FloatingActionButton(
+                  child: const Icon(Icons.done),
+                  onPressed: () {
+                    widget.todo.isFinish = handleDataBeforeSetToDB();
+                    TodoCubit.get(context).updateItem(widget.todo);
+                    Navigator.of(context)
+                        .pushNamedAndRemoveUntil(bottomNav, (route) => false);
+                  },
+                )
+              : const CircularProgressIndicator();
+        },
       ),
     );
   }

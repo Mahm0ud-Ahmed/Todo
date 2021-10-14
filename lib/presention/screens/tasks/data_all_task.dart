@@ -24,7 +24,12 @@ class _DataAllTaskState extends State<DataAllTask> {
   @override
   void initState() {
     super.initState();
-    _cubit = TodoCubit.get(context)..getAllDataFromDB();
+    _cubit ??= TodoCubit.get(context);
+    if (_cubit.allTodo.isEmpty) {
+      _cubit.getAllDataFromDB();
+    } else if (_allTodo.isEmpty) {
+      _allTodo = _cubit.allTodo;
+    }
   }
 
   @override
@@ -38,40 +43,47 @@ class _DataAllTaskState extends State<DataAllTask> {
           if (state is SuccessDataState) {
             _allTodo = state.allTodo;
           }
-          return ListView.builder(
-            physics: const BouncingScrollPhysics(),
-            itemCount: index == _allTodo.length
-                ? _allTodo.length + 1
-                : _allTodo.length,
-            itemBuilder: (context, index) {
-              index = index;
-              _currentTodo = _allTodo[index];
-              return Column(
-                children: [
-                  TodoCard(
-                    todo: _currentTodo,
-                    stateTask: _cubit.stateTodo[_currentTodo.id],
-                    colorText: _cubit.colorStateTodo[_currentTodo.id],
-                    onSubmitPopUpMenu: (String selected) {
-                      _selectedItem = _allTodo[index];
-                      checkChooseEditOrDeleteBtn(selected);
-                    },
-                    onClick: () {
-                      _selectedItem = _allTodo[index];
-                      Navigator.of(context).pushNamed(
-                        detailsScreen,
-                        arguments: _selectedItem,
-                      );
-                    },
+          return _allTodo.isNotEmpty
+              ? ListView.builder(
+                  physics: const BouncingScrollPhysics(),
+                  itemCount: index == _allTodo.length
+                      ? _allTodo.length + 1
+                      : _allTodo.length,
+                  itemBuilder: (context, index) {
+                    index = index;
+                    _currentTodo = _allTodo[index];
+                    return Column(
+                      children: [
+                        TodoCard(
+                          todo: _currentTodo,
+                          stateTask: _cubit.stateTodo[_currentTodo.id],
+                          colorText: _cubit.colorStateTodo[_currentTodo.id],
+                          onSubmitPopUpMenu: (String selected) {
+                            _selectedItem = _allTodo[index];
+                            checkChooseEditOrDeleteBtn(selected);
+                          },
+                          onClick: () {
+                            _selectedItem = _allTodo[index];
+                            Navigator.of(context).pushNamed(
+                              detailsScreen,
+                              arguments: _selectedItem,
+                            );
+                          },
+                        ),
+                        if (index == _allTodo.length - 1)
+                          const SizedBox(
+                            height: 30,
+                          ),
+                      ],
+                    );
+                  },
+                )
+              : const Center(
+                  child: Text(
+                    'You Don\'t have any Tasks',
+                    style: TextStyle(fontSize: 24),
                   ),
-                  if (index == _allTodo.length - 1)
-                    const SizedBox(
-                      height: 30,
-                    ),
-                ],
-              );
-            },
-          );
+                );
         },
       ),
     );

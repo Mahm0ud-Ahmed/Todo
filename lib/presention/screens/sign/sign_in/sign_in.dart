@@ -24,9 +24,8 @@ class _SignInState extends State<SignIn> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey.shade50,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        iconTheme: const IconThemeData(color: Colors.black),
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
@@ -35,14 +34,16 @@ class _SignInState extends State<SignIn> {
         margin: const EdgeInsets.only(top: 50),
         width: double.infinity,
         height: double.infinity,
+        clipBehavior: Clip.antiAlias,
         decoration: BoxDecoration(
           borderRadius: const BorderRadius.only(
             topLeft: Radius.circular(42),
             topRight: Radius.circular(42),
           ),
-          color: Colors.grey[200],
+          color: Theme.of(context).primaryColor,
         ),
         child: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
           child: Center(
             child: Form(
               key: _formState,
@@ -123,6 +124,10 @@ class _SignInState extends State<SignIn> {
                               bottomNav,
                               (route) => false,
                             );
+                          } else {
+                            setState(() {
+                              _isLoading = !_isLoading;
+                            });
                           }
                         }
                       },

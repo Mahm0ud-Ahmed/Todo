@@ -1,12 +1,19 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:convex_bottom_bar/convex_bottom_bar.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:todo_task/bloc/business_logic/todo_cubit.dart';
+import 'package:todo_task/bloc/business_logic/todo_state.dart';
 import 'package:todo_task/config/route/const_route.dart';
+import 'package:todo_task/config/style/colors.dart';
+import 'package:todo_task/data/datasources/local/storage_pref.dart';
 import 'package:todo_task/presention/screens/active/active.dart';
 import 'package:todo_task/presention/screens/add_task/add_task.dart';
 import 'package:todo_task/presention/screens/finish/finish.dart';
 import 'package:todo_task/presention/screens/setting/setting.dart';
 import 'package:todo_task/presention/screens/tasks/tasks.dart';
+
+import '../../../constant.dart';
 
 class BottomNav extends StatefulWidget {
   @override
@@ -30,24 +37,31 @@ class _BottomNavState extends State<BottomNav> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xff5a55ca),
       appBar: AppBar(
         title: const Text('ToDo App'),
         elevation: 0,
-        backgroundColor: const Color(0xff5a55ca),
         actions: [
-          IconButton(
-              icon: const Icon(Icons.exit_to_app),
-              onPressed: () async {
-                await FirebaseAuth.instance.signOut();
-                Navigator.of(context).pushReplacementNamed(signIn);
-              })
+          BlocBuilder<TodoCubit, TodoAppState>(
+            builder: (context, state) {
+              return IconButton(
+                icon: const Icon(Icons.exit_to_app),
+                onPressed: () async {
+                  await FirebaseAuth.instance.signOut();
+                  Navigator.of(context).pushReplacementNamed(signIn);
+                  await StoragePref.clearStorage();
+                  TodoCubit.get(context).changeStyle(false);
+                },
+              );
+            },
+          ),
         ],
       ),
       bottomNavigationBar: ConvexAppBar(
         initialActiveIndex: _pageIndex,
         style: TabStyle.fixedCircle,
-        backgroundColor: const Color(0xff5a55ca),
+        backgroundColor:
+            Theme.of(context).bottomNavigationBarTheme.backgroundColor,
+        color: Theme.of(context).bottomNavigationBarTheme.unselectedItemColor,
         activeColor: Colors.white,
         onTap: (index) {
           setState(() {

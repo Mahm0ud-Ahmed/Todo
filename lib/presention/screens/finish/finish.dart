@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:todo_task/config/style/colors.dart';
 import 'package:todo_task/presention/screens/finish/data_done_task.dart';
 import 'package:todo_task/presention/widget/page_title.dart';
+
+import '../../../constant.dart';
 
 class Finish extends StatefulWidget {
   @override
@@ -15,9 +18,9 @@ class _FinishState extends State<Finish> {
       children: [
         Container(
           margin: const EdgeInsets.only(top: 32),
-          decoration: const BoxDecoration(
-            color: Color(0xfff0f4fd),
-            borderRadius: BorderRadius.only(
+          decoration: BoxDecoration(
+            color: Theme.of(context).primaryColor,
+            borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(54),
               topRight: Radius.circular(54),
             ),

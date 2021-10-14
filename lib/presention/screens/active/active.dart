@@ -1,9 +1,10 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:todo_task/bloc/business_logic/todo_cubit.dart';
-import 'package:todo_task/data/model/todo_model.dart';
+import 'package:todo_task/config/style/colors.dart';
 import 'package:todo_task/presention/screens/active/data_active_task.dart';
 import 'package:todo_task/presention/widget/page_title.dart';
+
+import '../../../constant.dart';
 
 class Active extends StatefulWidget {
   @override
@@ -18,9 +19,9 @@ class _ActiveState extends State<Active> {
       children: [
         Container(
           margin: const EdgeInsets.only(top: 32),
-          decoration: const BoxDecoration(
-            color: Color(0xfff0f4fd),
-            borderRadius: BorderRadius.only(
+          decoration: BoxDecoration(
+            color: Theme.of(context).primaryColor,
+            borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(54),
               topRight: Radius.circular(54),
             ),

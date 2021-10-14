@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:todo_task/config/style/colors.dart';
+import 'package:todo_task/constant.dart';
 
 class CustomTextField extends StatelessWidget {
   final TextEditingController controller;
@@ -33,7 +35,7 @@ class CustomTextField extends StatelessWidget {
       obscureText: visibility ?? false,
       decoration: InputDecoration(
         filled: true,
-        fillColor: Colors.grey.shade50,
+        fillColor: Theme.of(context).cardColor,
         labelText: label,
         prefixIcon: prefixIcon,
         suffixIcon: suffixIcon,

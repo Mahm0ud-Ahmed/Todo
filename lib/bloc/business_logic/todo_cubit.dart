@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:todo_task/bloc/business_logic/todo_state.dart';
+import 'package:todo_task/constant.dart';
+import 'package:todo_task/data/datasources/local/storage_pref.dart';
 import 'package:todo_task/data/model/todo_model.dart';
 import 'package:todo_task/data/repository/todo_repository.dart';
 
@@ -99,22 +101,23 @@ class TodoCubit extends Cubit<TodoAppState> {
   }
 
   Color setColorToText(String state) {
-    MaterialColor color;
+    Color color;
     switch (state) {
       case 'DONE':
-        color = Colors.amber;
+        color = Colors.amber[400];
         break;
       case 'ACTIVE':
-        color = Colors.green;
+        color = Colors.green[400];
         break;
       case 'FINISH':
-        color = Colors.red;
+        color = Colors.red[400];
         break;
     }
     return color;
   }
 
   Future<bool> insertItem(TodoModel model) async {
+    emit(ConnectLoadingDBState());
     bool isUpdate;
     try {
       final int index = await _todoRepository.insertDb(model);
@@ -133,6 +136,7 @@ class TodoCubit extends Cubit<TodoAppState> {
   }
 
   Future<bool> updateItem(TodoModel model) async {
+    emit(ConnectLoadingDBState());
     bool isUpdate;
     try {
       final int index = await _todoRepository.updateDb(model);
@@ -157,5 +161,11 @@ class TodoCubit extends Cubit<TodoAppState> {
       print(error.toString());
       emit(ErrorDeleteData(message: 'Error Delete'));
     });
+  }
+
+  Future<void> changeStyle(bool value) async {
+    switchState = value;
+    await StoragePref.setValue('isDark', switchState);
+    emit(ChangeStyleMode(styleMode: switchState));
   }
 }

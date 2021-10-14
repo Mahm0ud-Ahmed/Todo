@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:todo_task/config/style/colors.dart';
+
+import '../../constant.dart';
 
 class PageTitle extends StatefulWidget {
   const PageTitle({Key key, this.title}) : super(key: key);
@@ -31,15 +34,15 @@ class _PageTitleState extends State<PageTitle> {
         width: MediaQuery.of(context).size.width * 0.6,
         height: 64,
         decoration: BoxDecoration(
-          color: const Color(0xff6c68d0),
+          color: Theme.of(context).canvasColor,
           borderRadius: BorderRadius.circular(16),
         ),
         child: Align(
           alignment: AlignmentDirectional.center,
           child: Text(
             widget.title,
-            style: TextStyle(
-              color: Colors.grey.shade100,
+            style: const TextStyle(
+              // color: Colors.grey.shade100,
               fontWeight: FontWeight.bold,
               fontSize: 32,
             ),
